@@ -76,3 +76,19 @@ r90=np.min(np.where(cds>0.9))
 X90=U[:,:(r90+1)]@np.diag(S[:r90+1])@VT[:(r90+1),:]
 plt.imshow(X90)
 plt.show()
+
+
+#Program randomized SVD alogrithm
+def rSVD(X,r,q,p):
+    #sample column space of X with P 
+    ny=X.shape[1]
+    P=np.random.randn(ny,r+p)
+    Z=X@P
+    for k in range(q):
+        Z=X@(X.T@Z)
+    Q,R=np.linalg.qr(Z,mode='reduced')
+    #compute svd on Y=Q.T@X
+    Y=Q.T@X#Y is the projection of X on its column space
+    UY,S,VT=np.linalg.svd(Y,full_matrices=False)
+    U=Q@UY
+    return U,S,VT
